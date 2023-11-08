@@ -1,6 +1,6 @@
 export const includeOptions = [
-  { title: 'Include Uppercase Letters', type: 'uppercase' },
-  { title: 'Include Lowercase Letters', type: 'lowercase' },
-  { title: 'Include Number', type: 'number' },
-  { title: 'Include Symbols', type: 'symbol' },
+  { title: 'include uppercase letters', type: 'uppercase' },
+  { title: 'include lowercase letters', type: 'lowercase' },
+  { title: 'include number', type: 'number' },
+  { title: 'include symbols', type: 'symbol' },
 ];

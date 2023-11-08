@@ -1,36 +1,185 @@
 'use client';
 
 import { includeOptions } from '@/lib/data';
+import { CharacterType, PasswordStrength } from '@/lib/types';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const PasswordGenerator = () => {
-  const [currentStrength, setCurrentStrength] = useState<number>(10);
+  const [passwordLength, setPasswordLength] = useState<number>(10);
+  const [generatedPassword, setGeneratedPassword] = useState<string>('test');
+  const [charTypesToUse, setCharTypesToUse] = useState<CharacterType[]>([]);
+  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>(
+    PasswordStrength.TooWeak
+  );
+  const [isPasswordCopied, setIsPasswordCopied] = useState(false);
+
+  const determinePasswordStrength = (
+    options: CharacterType[],
+    passwordLength: number
+  ) => {
+    const weights = {
+      pwLength: passwordLength >= 8 ? 2 : 0,
+      1: options.length >= 1 ? 1 : 0,
+      2: options.length >= 2 ? 1 : 0,
+      3: options.length >= 3 ? 1 : 0,
+      4: options.length >= 4 ? 1 : 0,
+    };
+
+    const totalWeight = Object.values(weights).reduce(
+      (acc, weight) => acc + weight,
+      0
+    );
+
+    if (totalWeight >= 5) {
+      return PasswordStrength.Strong;
+    } else if (totalWeight === 4) {
+      return PasswordStrength.Medium;
+    } else if (totalWeight === 3) {
+      return PasswordStrength.Weak;
+    } else {
+      return PasswordStrength.TooWeak;
+    }
+  };
+
+  const handleCheckboxChange = (
+    charType: CharacterType,
+    isChecked: boolean
+  ) => {
+    if (isChecked) {
+      const item = includeOptions.find((option) => option.type === charType);
+
+      if (item) {
+        setCharTypesToUse((prevOptions) => [
+          ...prevOptions,
+          item.type as CharacterType,
+        ]);
+      }
+    } else {
+      setCharTypesToUse((prevOptions) =>
+        prevOptions.filter((option) => option !== charType)
+      );
+    }
+  };
+
+  const generatePassword = () => {
+    const charSets = {
+      lowercase: 'abcdefghijklmnopqrstuvwxyz',
+      uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      number: '0123456789',
+      symbol: '!@#$%^&*()_+[]{}|;:\'"<>,.?/~`',
+    };
+
+    const getRandomInt = (min: number, max: number) => {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min) + min);
+    };
+
+    const result = [];
+
+    let tempSet = charTypesToUse.map((option) => charSets[option]);
+
+    for (let i = 0; i < passwordLength; i++) {
+      const randomSet = tempSet[getRandomInt(0, tempSet.length)];
+      result.push(randomSet[getRandomInt(0, randomSet.length)]);
+    }
+
+    setGeneratedPassword(result.join(''));
+  };
+
+  const generateStrengthColums = (strength: PasswordStrength) => {
+    switch (strength) {
+      case PasswordStrength.TooWeak:
+        return (
+          <div className='flex gap-2'>
+            <div className='h-[28px] w-[10px] bg-red-theme' />
+            <div className='h-[28px] w-[10px] border border-gray-light' />
+            <div className='h-[28px] w-[10px] border border-gray-light' />
+            <div className='h-[28px] w-[10px] border border-gray-light' />
+          </div>
+        );
+      case PasswordStrength.Weak:
+        return (
+          <div className='flex gap-2'>
+            <div className='h-[28px] w-[10px] bg-orange-theme' />
+            <div className='h-[28px] w-[10px] bg-orange-theme' />
+            <div className='h-[28px] w-[10px] border border-gray-light' />
+            <div className='h-[28px] w-[10px] border border-gray-light' />
+          </div>
+        );
+      case PasswordStrength.Medium:
+        return (
+          <div className='flex gap-2'>
+            <div className='h-[28px] w-[10px] bg-yellow-theme' />
+            <div className='h-[28px] w-[10px] bg-yellow-theme' />
+            <div className='h-[28px] w-[10px] bg-yellow-theme' />
+            <div className='h-[28px] w-[10px] border border-gray-light' />
+          </div>
+        );
+      case PasswordStrength.Strong:
+        return (
+          <div className='flex gap-2'>
+            <div className='h-[28px] w-[10px] bg-green-theme' />
+            <div className='h-[28px] w-[10px] bg-green-theme' />
+            <div className='h-[28px] w-[10px] bg-green-theme' />
+            <div className='h-[28px] w-[10px] bg-green-theme' />
+          </div>
+        );
+    }
+  };
+
+  useEffect(() => {
+    const strength = determinePasswordStrength(charTypesToUse, passwordLength);
+    if (strength) {
+      setPasswordStrength(strength);
+    }
+  }, [charTypesToUse, passwordLength]);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(generatedPassword);
+      setIsPasswordCopied(true);
+
+      setTimeout(() => {
+        setIsPasswordCopied(false);
+      }, 3000);
+    } catch (error) {
+      console.error('Error copying to clipboard:', error);
+    }
+  };
 
   return (
-    <main className='flex w-full max-w-[540px] flex-col items-center justify-center '>
+    <main className='flex w-full min-w-[350px] max-w-[540px] flex-col items-center justify-center'>
       <h1 className='mb-4 text-[16px] font-bold text-gray-medium md:mb-8 md:text-[24px]'>
         Password Generator
       </h1>
       <div className='flex w-full flex-col gap-4 text-[24px] font-bold text-gray-light md:gap-6 md:text-[32px]'>
         <div className='flex items-center justify-between bg-gray-dark p-4 md:px-8 md:py-5'>
-          <h2>asd</h2>
-          <button>
-            <Image
-              src='/icons/icon-copy.svg'
-              width={17.5}
-              height={20}
-              alt='copy to clipboard'
-            />
-          </button>
+          <h2>{generatedPassword}</h2>
+          <div className='flex items-center gap-4'>
+            {isPasswordCopied && (
+              <div className='text-[16px] uppercase text-green-theme'>
+                copied
+              </div>
+            )}
+            <button onClick={copyToClipboard}>
+              <Image
+                src='/icons/icon-copy.svg'
+                width={17.5}
+                height={20}
+                alt='copy to clipboard'
+              />
+            </button>
+          </div>
         </div>
 
-        <div className='bg-gray-dark p-4 md:px-8 md:py-6'>
+        <div className='flex flex-col gap-4 bg-gray-dark p-4 md:gap-8 md:px-8 md:py-6'>
           <div className='flex flex-col gap-2 md:gap-4'>
             <div className='flex items-center justify-between'>
               <h3 className='text-[16px] md:text-[24px]'>Character Length</h3>
               <h3 className='text-[24px] text-green-theme md:text-[32px]'>
-                {currentStrength}
+                {passwordLength}
               </h3>
             </div>
             <div>
@@ -38,32 +187,53 @@ const PasswordGenerator = () => {
                 type='range'
                 min={1}
                 max={20}
-                value={currentStrength}
+                value={passwordLength}
                 className='h-2 w-full'
-                onChange={(e) => setCurrentStrength(+e.target.value)}
+                onChange={(e) => setPasswordLength(+e.target.value)}
               />
             </div>
-            <div className='flex flex-col gap-4 md:gap-5'>
-              {includeOptions.map((option) => (
-                <div
-                  key={option.title}
-                  className='flex gap-5 text-[16px] md:gap-6'
-                >
-                  <input type='checkbox' name={option.type} />
-                  <label htmlFor={option.type}>{option.title}</label>
-                </div>
-              ))}
-            </div>
-            <div className='flex h-14 items-center justify-between bg-gray-darkest px-4 text-[16px] md:h-[72px] md:px-8 md:text-[24px]'>
-              <div className='text-gray-medium'>STRENGTH</div>
-              <div>
-                <div>MEDIUM</div>
+          </div>
+          <div className='flex flex-col gap-4 md:gap-5'>
+            {includeOptions.map((option) => (
+              <div
+                key={option.title}
+                className='flex gap-5 text-[16px] md:gap-6'
+              >
+                <input
+                  className='h-5 w-5 appearance-none border border-gray-light checked:border-none checked:bg-green-theme'
+                  type='checkbox'
+                  name={option.type}
+                  checked={charTypesToUse.some((item) => item === option.type)}
+                  onChange={(e) =>
+                    handleCheckboxChange(
+                      option.type as CharacterType,
+                      e.target.checked
+                    )
+                  }
+                />
+                <label htmlFor={option.type} className='capitalize'>
+                  {option.title}
+                </label>
               </div>
-            </div>
-            <div className='flex h-14 items-center justify-center bg-green-theme text-[16px] text-gray-darkest md:h-[72px] md:text-[24px]'>
-              <button>GENERATE</button>
+            ))}
+          </div>
+          <div className='flex h-14 items-center justify-between bg-gray-darkest px-4 text-[16px] md:h-[72px] md:px-8 md:text-[24px]'>
+            <div className='uppercase text-gray-medium'>strength</div>
+            <div className='flex items-center gap-4'>
+              <div className='uppercase'>{passwordStrength}</div>
+              {generateStrengthColums(passwordStrength)}
             </div>
           </div>
+          <button
+            className='flex h-14 items-center justify-center bg-green-theme text-[16px] uppercase text-gray-darkest transition-all duration-300 hover:border hover:border-green-theme hover:bg-gray-darkest hover:text-green-theme disabled:bg-black md:h-[72px] md:text-[24px]'
+            disabled={
+              passwordStrength === PasswordStrength.TooWeak ||
+              charTypesToUse.length === 0
+            }
+            onClick={() => generatePassword()}
+          >
+            generate
+          </button>
         </div>
       </div>
     </main>
