@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 
 const PasswordGenerator = () => {
   const [passwordLength, setPasswordLength] = useState<number>(10);
-  const [generatedPassword, setGeneratedPassword] = useState<string>('test');
+  const [generatedPassword, setGeneratedPassword] = useState<string>('');
   const [charTypesToUse, setCharTypesToUse] = useState<CharacterType[]>([]);
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>(
     PasswordStrength.TooWeak
@@ -156,7 +156,7 @@ const PasswordGenerator = () => {
       </h1>
       <div className='flex w-full flex-col gap-4 text-[24px] font-bold text-gray-light md:gap-6 md:text-[32px]'>
         <div className='flex items-center justify-between bg-gray-dark p-4 md:px-8 md:py-5'>
-          <h2>{generatedPassword}</h2>
+          <h2 className='text-[24px] md:text-[32px]'>{generatedPassword}</h2>
           <div className='flex items-center gap-4'>
             {isPasswordCopied && (
               <div className='text-[16px] uppercase text-green-theme'>
@@ -225,7 +225,7 @@ const PasswordGenerator = () => {
             </div>
           </div>
           <button
-            className='flex h-14 items-center justify-center bg-green-theme text-[16px] uppercase text-gray-darkest transition-all duration-300 hover:border hover:border-green-theme hover:bg-gray-darkest hover:text-green-theme disabled:bg-black md:h-[72px] md:text-[24px]'
+            className='flex h-14 items-center justify-center bg-green-theme text-[16px] uppercase text-gray-darkest transition-all duration-300 hover:border hover:border-green-theme hover:bg-gray-darkest hover:text-green-theme disabled:cursor-not-allowed disabled:bg-gray-dark md:h-[72px] md:text-[24px]'
             disabled={
               passwordStrength === PasswordStrength.TooWeak ||
               charTypesToUse.length === 0
