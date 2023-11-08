@@ -14,3 +14,52 @@
   --color-yellow-theme: #f8cd65;
 }
 
+/*Range Reset*/
+.range-selector {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+}
+
+.range-selector:focus {
+  outline: none;
+}
+
+/*** Chrome, Safari, Opera and Edge Chromium styles ***/
+.range-selector::-webkit-slider-runnable-track {
+  background-color: var(--color-green-theme);
+  height: 8px;
+}
+
+.range-selector::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -10px;
+  background-color: var(--color-gray-light);
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+}
+
+/*** Firefox styles ***/
+.range-selector::-moz-range-track {
+  background-color: var(--color-green-theme);
+  height: 8px;
+}
+
+.range-selector::-moz-range-thumb {
+  border: none;
+  border-radius: 0;
+  background-color: #5cd5eb;
+  height: 2rem;
+  width: 1rem;
+}
+
+.range-selector:focus::-moz-range-thumb {
+  background-color: var(--color-gray-light);
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+}

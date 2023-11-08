@@ -8,7 +8,11 @@ import React, { useEffect, useState } from 'react';
 const PasswordGenerator = () => {
   const [passwordLength, setPasswordLength] = useState<number>(10);
   const [generatedPassword, setGeneratedPassword] = useState<string>('');
-  const [charTypesToUse, setCharTypesToUse] = useState<CharacterType[]>([]);
+  const [charTypesToUse, setCharTypesToUse] = useState<CharacterType[]>([
+    'uppercase',
+    'lowercase',
+    'number',
+  ]);
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>(
     PasswordStrength.TooWeak
   );
@@ -155,7 +159,7 @@ const PasswordGenerator = () => {
         Password Generator
       </h1>
       <div className='flex w-full flex-col gap-4 text-[24px] font-bold text-gray-light md:gap-6 md:text-[32px]'>
-        <div className='flex items-center justify-between bg-gray-dark p-4 md:px-8 md:py-5'>
+        <div className='flex h-[64px] items-center justify-between bg-gray-dark p-4 md:h-[80px] md:px-8 md:py-5'>
           <h2 className='text-[24px] md:text-[32px]'>{generatedPassword}</h2>
           <div className='flex items-center gap-4'>
             {isPasswordCopied && (
@@ -188,7 +192,7 @@ const PasswordGenerator = () => {
                 min={1}
                 max={20}
                 value={passwordLength}
-                className='h-2 w-full'
+                className='range-selector'
                 onChange={(e) => setPasswordLength(+e.target.value)}
               />
             </div>
@@ -199,18 +203,31 @@ const PasswordGenerator = () => {
                 key={option.title}
                 className='flex gap-5 text-[16px] md:gap-6'
               >
-                <input
-                  className='h-5 w-5 appearance-none border border-gray-light checked:border-none checked:bg-green-theme'
-                  type='checkbox'
-                  name={option.type}
-                  checked={charTypesToUse.some((item) => item === option.type)}
-                  onChange={(e) =>
-                    handleCheckboxChange(
-                      option.type as CharacterType,
-                      e.target.checked
-                    )
-                  }
-                />
+                <div className='relative h-5 w-5'>
+                  <input
+                    className='h-5 w-5 appearance-none border border-gray-light checked:border-none checked:bg-green-theme'
+                    type='checkbox'
+                    name={option.type}
+                    checked={charTypesToUse.some(
+                      (item) => item === option.type
+                    )}
+                    onChange={(e) =>
+                      handleCheckboxChange(
+                        option.type as CharacterType,
+                        e.target.checked
+                      )
+                    }
+                  />
+                  {charTypesToUse.some((item) => item === option.type) && (
+                    <Image
+                      src='/icons/icon-check.svg'
+                      alt='check/uncheck option'
+                      width={11}
+                      height={8}
+                      className='pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+                    />
+                  )}
+                </div>
                 <label htmlFor={option.type} className='capitalize'>
                   {option.title}
                 </label>
