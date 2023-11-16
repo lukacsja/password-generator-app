@@ -60,4 +60,5 @@ body {
   background-color: var(--color-gray-light);
   height: 28px;
   width: 28px;
+  border-radius: 50%;
 }
