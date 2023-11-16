@@ -5,7 +5,7 @@ import './globals.css';
 const jetbrains = JetBrains_Mono({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'password-generator-app',
+  title: 'password generator app',
   description: '',
 };
 

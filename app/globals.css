@@ -14,7 +14,12 @@
   --color-yellow-theme: #f8cd65;
 }
 
-/*Range Reset*/
+body {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+}
+
 .range-selector {
   -webkit-appearance: none;
   appearance: none;
@@ -27,7 +32,7 @@
   outline: none;
 }
 
-/*** Chrome, Safari, Opera and Edge Chromium styles ***/
+/* Chrome, Safari, Opera and Edge Chromium */
 .range-selector::-webkit-slider-runnable-track {
   background-color: var(--color-green-theme);
   height: 8px;
@@ -43,7 +48,7 @@
   border-radius: 50%;
 }
 
-/*** Firefox styles ***/
+/* Firefox */
 .range-selector::-moz-range-track {
   background-color: var(--color-green-theme);
   height: 8px;
@@ -52,14 +57,7 @@
 .range-selector::-moz-range-thumb {
   border: none;
   border-radius: 0;
-  background-color: #5cd5eb;
-  height: 2rem;
-  width: 1rem;
-}
-
-.range-selector:focus::-moz-range-thumb {
   background-color: var(--color-gray-light);
   height: 28px;
   width: 28px;
-  border-radius: 50%;
 }

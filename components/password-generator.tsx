@@ -1,9 +1,9 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { includeOptions } from '@/lib/data';
 import { CharacterType, PasswordStrength } from '@/lib/types';
-import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
 
 const PasswordGenerator = () => {
   const [passwordLength, setPasswordLength] = useState<number>(10);
@@ -22,12 +22,20 @@ const PasswordGenerator = () => {
     options: CharacterType[],
     passwordLength: number
   ) => {
+    const STRONG_THRESHOLD = 8;
+    const MEDIUM_THRESHOLD = 6;
+    const WEAK_THRESHOLD = 5;
+
     const weights = {
-      pwLength: passwordLength >= 8 ? 2 : 0,
-      1: options.length >= 1 ? 1 : 0,
-      2: options.length >= 2 ? 1 : 0,
-      3: options.length >= 3 ? 1 : 0,
-      4: options.length >= 4 ? 1 : 0,
+      0: passwordLength >= 12 ? 4 : 0,
+      1: passwordLength >= 10 ? 3 : 0,
+      2: passwordLength >= 8 ? 2 : 0,
+      3: passwordLength >= 6 ? 1 : 0,
+      4: passwordLength <= 4 ? -3 : 0,
+      5: options.length >= 1 ? 1 : 0,
+      6: options.length >= 2 ? 2 : 0,
+      7: options.length >= 3 ? 3 : 0,
+      8: options.length >= 4 ? 4 : 0,
     };
 
     const totalWeight = Object.values(weights).reduce(
@@ -35,11 +43,11 @@ const PasswordGenerator = () => {
       0
     );
 
-    if (totalWeight >= 5) {
+    if (totalWeight >= STRONG_THRESHOLD) {
       return PasswordStrength.Strong;
-    } else if (totalWeight === 4) {
+    } else if (totalWeight >= MEDIUM_THRESHOLD) {
       return PasswordStrength.Medium;
-    } else if (totalWeight === 3) {
+    } else if (totalWeight >= WEAK_THRESHOLD) {
       return PasswordStrength.Weak;
     } else {
       return PasswordStrength.TooWeak;
@@ -205,7 +213,7 @@ const PasswordGenerator = () => {
               >
                 <div className='relative h-5 w-5'>
                   <input
-                    className='h-5 w-5 appearance-none border border-gray-light checked:border-none checked:bg-green-theme'
+                    className='h-5 w-5 cursor-pointer appearance-none border border-gray-light checked:border-none checked:bg-green-theme'
                     type='checkbox'
                     name={option.type}
                     checked={charTypesToUse.some(
@@ -242,14 +250,20 @@ const PasswordGenerator = () => {
             </div>
           </div>
           <button
-            className='flex h-14 items-center justify-center bg-green-theme text-[16px] uppercase text-gray-darkest transition-all duration-300 hover:border hover:border-green-theme hover:bg-gray-darkest hover:text-green-theme disabled:cursor-not-allowed disabled:bg-gray-dark md:h-[72px] md:text-[24px]'
+            className='flex h-14 items-center justify-center gap-4 bg-green-theme text-[16px] uppercase text-gray-darkest transition-all duration-300 hover:border hover:border-green-theme hover:bg-gray-darkest hover:text-green-theme disabled:cursor-not-allowed disabled:bg-gray-dark md:h-[72px] md:gap-6 md:text-[24px]'
             disabled={
               passwordStrength === PasswordStrength.TooWeak ||
               charTypesToUse.length === 0
             }
             onClick={() => generatePassword()}
           >
-            generate
+            <span>generate</span>
+            <Image
+              src='/icons/icon-arrow-right.svg'
+              alt='generate password'
+              width={12}
+              height={12}
+            />
           </button>
         </div>
       </div>
