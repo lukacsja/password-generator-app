@@ -4,10 +4,13 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { includeOptions } from '@/lib/data';
 import { CharacterType, PasswordStrength } from '@/lib/types';
+import ArrowRight from './icons/arrow-right-icon';
+import CopyIcon from './icons/copy-icon';
 
 const PasswordGenerator = () => {
   const [passwordLength, setPasswordLength] = useState<number>(10);
-  const [generatedPassword, setGeneratedPassword] = useState<string>('');
+  const [generatedPassword, setGeneratedPassword] =
+    useState<string>('P4$5W0rD!');
   const [charTypesToUse, setCharTypesToUse] = useState<CharacterType[]>([
     'uppercase',
     'lowercase',
@@ -167,20 +170,23 @@ const PasswordGenerator = () => {
       </h1>
       <div className='flex w-full flex-col gap-4 text-[24px] font-bold text-gray-light md:gap-6 md:text-[32px]'>
         <div className='flex h-[64px] items-center justify-between bg-gray-dark p-4 md:h-[80px] md:px-8 md:py-5'>
-          <h2 className='text-[24px] md:text-[32px]'>{generatedPassword}</h2>
+          <h2
+            className={`text-[24px] md:text-[32px] ${
+              generatedPassword === 'P4$5W0rD!'
+                ? 'text-gray-medium'
+                : 'text-gray-light'
+            }`}
+          >
+            {generatedPassword}
+          </h2>
           <div className='flex items-center gap-4'>
             {isPasswordCopied && (
               <div className='text-[16px] uppercase text-green-theme'>
                 copied
               </div>
             )}
-            <button onClick={copyToClipboard}>
-              <Image
-                src='/icons/icon-copy.svg'
-                width={17.5}
-                height={20}
-                alt='copy to clipboard'
-              />
+            <button onClick={copyToClipboard} className='group'>
+              <CopyIcon color='#a4ffaf' />
             </button>
           </div>
         </div>
@@ -249,7 +255,7 @@ const PasswordGenerator = () => {
             </div>
           </div>
           <button
-            className='flex h-14 items-center justify-center gap-4 bg-green-theme text-[16px] uppercase text-gray-darkest transition-all duration-300 hover:border hover:border-green-theme hover:bg-gray-darkest hover:text-green-theme disabled:cursor-not-allowed md:h-[72px] md:gap-6 md:text-[24px]'
+            className='group flex h-14 items-center justify-center gap-4 bg-green-theme text-[16px] uppercase text-gray-darkest transition-all duration-300 hover:border hover:border-green-theme hover:bg-gray-darkest hover:text-green-theme disabled:cursor-not-allowed md:h-[72px] md:gap-6 md:text-[24px]'
             disabled={
               passwordStrength === PasswordStrength.TooWeak ||
               charTypesToUse.length === 0
@@ -257,12 +263,7 @@ const PasswordGenerator = () => {
             onClick={() => generatePassword()}
           >
             <span>generate</span>
-            <Image
-              src='/icons/icon-arrow-right.svg'
-              alt='generate password'
-              width={12}
-              height={12}
-            />
+            <ArrowRight color='#24232C' />
           </button>
         </div>
       </div>
