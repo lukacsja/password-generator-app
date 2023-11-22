@@ -48,6 +48,11 @@ body {
   border-radius: 50%;
 }
 
+.range-selector::-webkit-slider-thumb:hover {
+  background: var(--color-gray-darkest);
+  border: 1px solid var(--color-green-theme);
+}
+
 /* Firefox */
 .range-selector::-moz-range-track {
   background-color: var(--color-green-theme);
@@ -61,4 +66,9 @@ body {
   height: 28px;
   width: 28px;
   border-radius: 50%;
+}
+
+.range-selector::-moz-range-thumb:hover {
+  background: var(--color-gray-darkest);
+  border: 1px solid var(--color-green-theme);
 }

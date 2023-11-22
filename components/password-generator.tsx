@@ -41,9 +41,6 @@ const PasswordGenerator = () => {
       8: options.length >= 4 ? 2 : 0,
     };
 
-    const maxWeight = 4 + 3 + 2 + 1 + 1 + 1 + 2 + 2;
-    console.log(maxWeight);
-
     const totalWeight = Object.values(weights).reduce(
       (acc, weight) => acc + weight,
       0
@@ -164,7 +161,7 @@ const PasswordGenerator = () => {
   };
 
   return (
-    <main className='flex w-full min-w-[350px] max-w-[540px] flex-col items-center justify-center'>
+    <main className='flex w-full min-w-[330px] max-w-[540px] flex-col items-center justify-center'>
       <h1 className='mb-4 text-[16px] font-bold text-gray-medium md:mb-8 md:text-[24px]'>
         Password Generator
       </h1>
@@ -218,7 +215,7 @@ const PasswordGenerator = () => {
               >
                 <div className='relative h-5 w-5'>
                   <input
-                    className='h-5 w-5 cursor-pointer appearance-none border border-gray-light checked:border-none checked:bg-green-theme'
+                    className='h-5 w-5 cursor-pointer appearance-none border border-gray-light checked:border-none checked:bg-green-theme hover:border-green-theme'
                     type='checkbox'
                     name={option.type}
                     checked={charTypesToUse.some(
