@@ -182,7 +182,11 @@ const PasswordGenerator = () => {
                 copied
               </div>
             )}
-            <button onClick={copyToClipboard} className='group'>
+            <button
+              onClick={copyToClipboard}
+              className='group'
+              aria-label='copy password'
+            >
               <CopyIcon color='#a4ffaf' />
             </button>
           </div>
@@ -258,6 +262,7 @@ const PasswordGenerator = () => {
               charTypesToUse.length === 0
             }
             onClick={() => generatePassword()}
+            aria-label='generate password'
           >
             <span>generate</span>
             <ArrowRight color='#24232C' />
