@@ -201,7 +201,11 @@ const PasswordGenerator = () => {
               </h3>
             </div>
             <div>
+              <label htmlFor='rangeInput' className='sr-only'>
+                Select a Value:
+              </label>
               <input
+                id='rangeInput'
                 type='range'
                 min={1}
                 max={20}
@@ -219,6 +223,7 @@ const PasswordGenerator = () => {
               >
                 <div className='relative h-5 w-5'>
                   <input
+                    id={option.type}
                     className='h-5 w-5 cursor-pointer appearance-none border border-gray-light checked:border-none checked:bg-green-theme hover:border-green-theme'
                     type='checkbox'
                     name={option.type}
