@@ -22,21 +22,24 @@ const PasswordGenerator = () => {
     options: CharacterType[],
     passwordLength: number
   ) => {
-    const STRONG_THRESHOLD = 8;
+    const STRONG_THRESHOLD = 9;
     const MEDIUM_THRESHOLD = 6;
-    const WEAK_THRESHOLD = 5;
+    const WEAK_THRESHOLD = 4;
 
     const weights = {
-      0: passwordLength >= 12 ? 4 : 0,
-      1: passwordLength >= 10 ? 3 : 0,
-      2: passwordLength >= 8 ? 2 : 0,
-      3: passwordLength >= 6 ? 1 : 0,
-      4: passwordLength <= 4 ? -3 : 0,
+      0: passwordLength >= 11 ? 4 : 0,
+      1: passwordLength >= 9 ? 3 : 0,
+      2: passwordLength >= 7 ? 2 : 0,
+      3: passwordLength >= 5 ? 1 : 0,
+      4: passwordLength <= 4 ? -4 : 0,
       5: options.length >= 1 ? 1 : 0,
-      6: options.length >= 2 ? 2 : 0,
-      7: options.length >= 3 ? 3 : 0,
-      8: options.length >= 4 ? 4 : 0,
+      6: options.length >= 2 ? 1 : 0,
+      7: options.length >= 3 ? 2 : 0,
+      8: options.length >= 4 ? 2 : 0,
     };
+
+    const maxWeight = 4 + 3 + 2 + 1 + 1 + 1 + 2 + 2;
+    console.log(maxWeight);
 
     const totalWeight = Object.values(weights).reduce(
       (acc, weight) => acc + weight,
@@ -100,45 +103,41 @@ const PasswordGenerator = () => {
     setGeneratedPassword(result.join(''));
   };
 
-  const generateStrengthColums = (strength: PasswordStrength) => {
-    switch (strength) {
-      case PasswordStrength.TooWeak:
-        return (
-          <div className='flex gap-2'>
-            <div className='h-[28px] w-[10px] bg-red-theme' />
-            <div className='h-[28px] w-[10px] border border-gray-light' />
-            <div className='h-[28px] w-[10px] border border-gray-light' />
-            <div className='h-[28px] w-[10px] border border-gray-light' />
-          </div>
-        );
-      case PasswordStrength.Weak:
-        return (
-          <div className='flex gap-2'>
-            <div className='h-[28px] w-[10px] bg-orange-theme' />
-            <div className='h-[28px] w-[10px] bg-orange-theme' />
-            <div className='h-[28px] w-[10px] border border-gray-light' />
-            <div className='h-[28px] w-[10px] border border-gray-light' />
-          </div>
-        );
-      case PasswordStrength.Medium:
-        return (
-          <div className='flex gap-2'>
-            <div className='h-[28px] w-[10px] bg-yellow-theme' />
-            <div className='h-[28px] w-[10px] bg-yellow-theme' />
-            <div className='h-[28px] w-[10px] bg-yellow-theme' />
-            <div className='h-[28px] w-[10px] border border-gray-light' />
-          </div>
-        );
-      case PasswordStrength.Strong:
-        return (
-          <div className='flex gap-2'>
-            <div className='h-[28px] w-[10px] bg-green-theme' />
-            <div className='h-[28px] w-[10px] bg-green-theme' />
-            <div className='h-[28px] w-[10px] bg-green-theme' />
-            <div className='h-[28px] w-[10px] bg-green-theme' />
-          </div>
-        );
-    }
+  const generateStrengthColumns = (strength: PasswordStrength) => {
+    const strengthMap = {
+      [PasswordStrength.TooWeak]: [
+        { color: 'bg-red-theme' },
+        { color: 'border border-gray-light' },
+        { color: 'border border-gray-light' },
+        { color: 'border border-gray-light' },
+      ],
+      [PasswordStrength.Weak]: [
+        { color: 'bg-orange-theme' },
+        { color: 'bg-orange-theme' },
+        { color: 'border border-gray-light' },
+        { color: 'border border-gray-light' },
+      ],
+      [PasswordStrength.Medium]: [
+        { color: 'bg-yellow-theme' },
+        { color: 'bg-yellow-theme' },
+        { color: 'bg-yellow-theme' },
+        { color: 'border border-gray-light' },
+      ],
+      [PasswordStrength.Strong]: [
+        { color: 'bg-green-theme' },
+        { color: 'bg-green-theme' },
+        { color: 'bg-green-theme' },
+        { color: 'bg-green-theme' },
+      ],
+    };
+
+    return (
+      <div className='flex gap-2'>
+        {strengthMap[strength].map((style, index) => (
+          <div key={index} className={`h-[28px] w-[10px] ${style.color}`} />
+        ))}
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -246,11 +245,11 @@ const PasswordGenerator = () => {
             <div className='uppercase text-gray-medium'>strength</div>
             <div className='flex items-center gap-4'>
               <div className='uppercase'>{passwordStrength}</div>
-              {generateStrengthColums(passwordStrength)}
+              {generateStrengthColumns(passwordStrength)}
             </div>
           </div>
           <button
-            className='flex h-14 items-center justify-center gap-4 bg-green-theme text-[16px] uppercase text-gray-darkest transition-all duration-300 hover:border hover:border-green-theme hover:bg-gray-darkest hover:text-green-theme disabled:cursor-not-allowed disabled:bg-gray-dark md:h-[72px] md:gap-6 md:text-[24px]'
+            className='flex h-14 items-center justify-center gap-4 bg-green-theme text-[16px] uppercase text-gray-darkest transition-all duration-300 hover:border hover:border-green-theme hover:bg-gray-darkest hover:text-green-theme disabled:cursor-not-allowed md:h-[72px] md:gap-6 md:text-[24px]'
             disabled={
               passwordStrength === PasswordStrength.TooWeak ||
               charTypesToUse.length === 0
